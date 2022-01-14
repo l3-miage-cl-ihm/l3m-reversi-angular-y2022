@@ -86,7 +86,11 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
    * @returns L'état initiale du jeu, avec les 4 pions initiaux bien placés.
    */
   private initGameState(): GameState {
-    return {turn: this.turn, board: this.board};
+    const board = getEmptyBoard();
+    board[4][3] = board[3][4] = 'Player1';
+    board[3][3] = board[4][4] = 'Player2';
+
+    return {turn: 'Player1', board};
   }
 
   /**
@@ -105,7 +109,43 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
    * @returns liste des positions jouables par le joueur courant.
    */
   whereCanPlay(): readonly TileCoords[] {
-    return [];
+
+    const L: TileCoords[] = [];
+    for (let i = 0; i < this.board.length; i++) {
+      for (let j = 0; j < this.board[i].length; j++) {
+        if (this.PionsTakenIfPlayAt(i, j).length > 0) {
+          L.push( [i, j] );
+        }
+      }
+    }
+
+    return L;
+
+    /*
+    // OU
+    const L: TileCoords[] = [];
+    this.board.forEach( (line, i) => line.forEach( (c, j) => {
+      if (this.PionsTakenIfPlayAt(i, j).length > 0) {
+        L.push( [i, j] );
+      }
+    }));
+
+    // OU
+    return this.board.reduce(
+      (L, line, i) => [ ...L
+                      , ...line.reduce( (acc, _c, j) => this.PionsTakenIfPlayAt(i, j).length > 0 ? [...acc, [i, j] as TileCoords] : acc
+                                      , [] as TileCoords[])],
+       [] as TileCoords[]
+    );
+
+    // OU
+    return this.board.reduce(
+      (acc, line, i) => [...acc, ...line.map( (_c, j) => [i, j] as TileCoords)],
+       [] as TileCoords[]
+    ).filter(
+      ([i, j]) => this.PionsTakenIfPlayAt(i, j).length > 0
+    )
+    */
   }
 
   /**
