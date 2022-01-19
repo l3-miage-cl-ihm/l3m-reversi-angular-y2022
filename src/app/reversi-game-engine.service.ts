@@ -101,35 +101,70 @@ export class ReversiGameEngineService implements ReversiModelInterface {
    * @returns Une liste des positions qui seront prise si le pion est posée en x,y
    */
   PionsTakenIfPlayAt(i: number, j: number): PlayImpact {
-
+    /*
+      On chercher un pion du joueur adverse tout autour de la position (i,j)
+      Si on en trouve un :
+          - on fait une boucle while qui avance dans le sens de la position (tant que on a un pion joueur adverse)
+          - quand on sort de la boucle on check si le pion = Empty ou Joueur Adverse ou Joueur Courant
+          - Si le pion apres tant que = Joueur Courant alors 
+              * on ajoute le pion dans le tableau
+    */
     const L: TileCoords[] = [];
+    const coordCheck = [[i-1,j+1, -1, +1], [i-1,j, -1, 0], [i-1,j-1, -1, -1], [i,j+1, 0, +1], [i,j-1, 0, -1], [i+1,j+1, +1, +1], [i+1,j, +1, 0], [i+1,j-1, +1, -1]];
+    const adverse:Turn = (this.turn === 'Player1' ? 'Player2':'Player1');
+    for(let nbPosibilite=0; nbPosibilite<8; nbPosibilite++) {
+        let coI:number = coordCheck[i][0];
+        let coJ:number = coordCheck[i][1];
+        let pionManger:TileCoords[] = [];
 
+        if(coI < 8 && coI >= 0 && coJ < 8 && coJ >= 0) {
+            while(this.board[coI][coJ] === adverse) {
+                pionManger.push([coI,coJ]);
 
-    if(this.board[i-1][j+1] !== undefined && this.board[i-1][j+1] === 'Empty') {
-      L.push([i-1,j+1])
-    }  /*
-    if(this.board[i-1][j] == 'Empty') {
-      L.push([i-1,j])
+                coI += coordCheck[i][2];
+                coJ += coordCheck[i][3];
+            }
+
+            if(coI < 8 && coI >= 0 && coJ < 8 && coJ >= 0) {
+                if(this.board[coI][coJ] === this.turn) {
+                    pionManger.map(elem => L.push(elem));
+                }
+            }
+        }
     }
-    if(this.board[i-1][j-1] == 'Empty') {
-      L.push([i-1,j-1])
+
+    /*
+    if(i-1 >= 0) {
+        if(j+1 <= 7 && this.board[i-1][j+1] == 'Empty') {
+          L.push([i-1,j+1])
+        }  
+        if(this.board[i-1][j] == 'Empty') {
+          L.push([i-1,j])
+        }
+        if(j-1 >= 0 && this.board[i-1][j-1] == 'Empty') {
+          L.push([i-1,j-1])
+        }
     }
-    if(this.board[i][j+1] == 'Empty') {
+
+    if(j+1 <= 7 && this.board[i][j+1] == 'Empty') {
       L.push([i,j+1])
     }
-    if(this.board[i][j-1] == 'Empty') {
+    if(j-1 >= 0 && this.board[i][j-1] == 'Empty') {
       L.push([i,j-1])
     }
-    if(this.board[i+1][j+1] == 'Empty') {
-      L.push([i+1,j+1])
+
+    if(i+1 <= 7) {
+        if(j+1 <= 7 && this.board[i+1][j+1] == 'Empty') {
+          L.push([i+1,j+1])
+        }
+        if(this.board[i+1][j] == 'Empty') {
+          L.push([i-1,j])
+        }
+        if(j-1 >= 0 && this.board[i+1][j-1] == 'Empty') {
+          L.push([i+1,j-1])
+        }
     }
-    if(this.board[i+1][j] == 'Empty') {
-      L.push([i-1,j])
-    }
-    if(this.board[i+1][j-1] == 'Empty') {
-      L.push([i+1,j-1])
-    }
-*/
+    */
 
     /*
       //Récupère toutes les positions du joueur couran
@@ -148,7 +183,7 @@ export class ReversiGameEngineService implements ReversiModelInterface {
   */
 
 
-      return []; // [[x: number, y: number], [x: number, y: number]];
+      return L; // [[x: number, y: number], [x: number, y: number]];
   }
 
   /**
@@ -160,9 +195,9 @@ export class ReversiGameEngineService implements ReversiModelInterface {
     const L: TileCoords[] = [];
 
     this.board.map((ligne, i) => ligne.map((pion, j) => {
-        if(this.PionsTakenIfPlayAt(i, j).length > 0) {
-          L.push([i,j]);
-        }
+          if(this.PionsTakenIfPlayAt(i, j).length > 0) {
+              L.push([i,j]);
+          }
       }
     ));
 
