@@ -23,14 +23,14 @@ export class ReversiGameEngineService implements ReversiModelInterface {
 
   résuméDebug(): void {
     console.log( `________
-${BoardtoString(this.board)}
-________
-Au tour de ${this.turn}
-X représente ${charToTurn('X')}
-O représente ${charToTurn('O')}
-________
-Coups possibles (${this.whereCanPlay().length}) :
-${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
+      ${BoardtoString(this.board)}
+      ________
+      Au tour de ${this.turn}
+      X représente ${charToTurn('X')}
+      O représente ${charToTurn('O')}
+      ________
+      Coups possibles (${this.whereCanPlay().length}) :
+      ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
     `);
   }
 
@@ -85,8 +85,13 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
    * Initialise aussi le joueur courant.
    * @returns L'état initiale du jeu, avec les 4 pions initiaux bien placés.
    */
+
   private initGameState(): GameState {
-    return {turn: this.turn, board: this.board};
+    let b:Board = getEmptyBoard();
+    b[3][4] = b[4][3] = 'Player1';
+    b[3][3] = b[4][4] = 'Player2';
+
+    return {turn: 'Player1', board: b};
   }
 
   /**
@@ -96,7 +101,89 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
    * @returns Une liste des positions qui seront prise si le pion est posée en x,y
    */
   PionsTakenIfPlayAt(i: number, j: number): PlayImpact {
-      return [];
+    /*
+      On chercher un pion du joueur adverse tout autour de la position (i,j)
+      Si on en trouve un :
+          - on fait une boucle while qui avance dans le sens de la position (tant que on a un pion joueur adverse)
+          - quand on sort de la boucle on check si le pion = Empty ou Joueur Adverse ou Joueur Courant
+          - Si le pion apres tant que = Joueur Courant alors 
+              * on ajoute le pion dans le tableau
+    */
+    const L: TileCoords[] = [];
+    const coordCheck = [[i-1,j+1, -1, +1], [i-1,j, -1, 0], [i-1,j-1, -1, -1], [i,j+1, 0, +1], [i,j-1, 0, -1], [i+1,j+1, +1, +1], [i+1,j, +1, 0], [i+1,j-1, +1, -1]];
+    const adverse:Turn = (this.turn === 'Player1' ? 'Player2':'Player1');
+    for(let nbPosibilite=0; nbPosibilite<8; nbPosibilite++) {
+        let coI:number = coordCheck[i][0];
+        let coJ:number = coordCheck[i][1];
+        let pionManger:TileCoords[] = [];
+
+        if(coI < 8 && coI >= 0 && coJ < 8 && coJ >= 0) {
+            while(this.board[coI][coJ] === adverse) {
+                pionManger.push([coI,coJ]);
+
+                coI += coordCheck[i][2];
+                coJ += coordCheck[i][3];
+            }
+
+            if(coI < 8 && coI >= 0 && coJ < 8 && coJ >= 0) {
+                if(this.board[coI][coJ] === this.turn) {
+                    pionManger.map(elem => L.push(elem));
+                }
+            }
+        }
+    }
+
+    /*
+    if(i-1 >= 0) {
+        if(j+1 <= 7 && this.board[i-1][j+1] == 'Empty') {
+          L.push([i-1,j+1])
+        }  
+        if(this.board[i-1][j] == 'Empty') {
+          L.push([i-1,j])
+        }
+        if(j-1 >= 0 && this.board[i-1][j-1] == 'Empty') {
+          L.push([i-1,j-1])
+        }
+    }
+
+    if(j+1 <= 7 && this.board[i][j+1] == 'Empty') {
+      L.push([i,j+1])
+    }
+    if(j-1 >= 0 && this.board[i][j-1] == 'Empty') {
+      L.push([i,j-1])
+    }
+
+    if(i+1 <= 7) {
+        if(j+1 <= 7 && this.board[i+1][j+1] == 'Empty') {
+          L.push([i+1,j+1])
+        }
+        if(this.board[i+1][j] == 'Empty') {
+          L.push([i-1,j])
+        }
+        if(j-1 >= 0 && this.board[i+1][j-1] == 'Empty') {
+          L.push([i+1,j-1])
+        }
+    }
+    */
+
+    /*
+      //Récupère toutes les positions du joueur couran
+      let allPosCurrentPlayer = this.board.filter(ligne => ligne.filter(pion => pion == this.turn));
+      console.log("Toutes les position du joueur courant " + this.turn);
+      console.log(allPosCurrentPlayer);
+
+      //Récupère toutes les cases qui sont vides autour du joueur pas courant
+      let allPosAroundEnemy = this.board.filter(ligne => ligne.filter(pion => pion != this.turn));
+      console.log("Toutes les position des enemies");
+      console.log(allPosAroundEnemy);
+
+      let allEmptyCaseAroundEnemy  = allPosAroundEnemy.filter(ligne => ligne.filter(pion => pion == 'Empty'));
+      console.log("Toutes les position des cases autour de l'ennemie");
+      console.log(allEmptyCaseAroundEnemy);
+  */
+
+
+      return L; // [[x: number, y: number], [x: number, y: number]];
   }
 
   /**
@@ -105,7 +192,25 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
    * @returns liste des positions jouables par le joueur courant.
    */
   whereCanPlay(): readonly TileCoords[] {
-    return [];
+    const L: TileCoords[] = [];
+
+    this.board.map((ligne, i) => ligne.map((pion, j) => {
+          if(this.PionsTakenIfPlayAt(i, j).length > 0) {
+              L.push([i,j]);
+          }
+      }
+    ));
+
+    /*
+    for(let i=0; this.board.length; i++){
+      for(let j=0; this.board[i].length; j++){
+        if(this.PionsTakenIfPlayAt(i, j).length > 0) {
+          L.push([i,j]);
+        }
+      }
+    }
+    */
+    return L;
   }
 
   /**
