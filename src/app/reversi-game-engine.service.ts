@@ -103,7 +103,7 @@ ${this.whereCanPlay().map( P => `  * ${P}`).join("\n")}
     if (this.board[i]?.[j] !== 'Empty')
       return [];
 
-      const adversaire: Turn = this.turn === 'Player1' ? 'Player2' : 'Player1';
+    const adversaire: Turn = this.turn === 'Player1' ? 'Player2' : 'Player1';
     // Parcourir les 8 directions pour accumuler les coordonnées de pions prenables
     return [ [1, 0], [1, -1], [1, 1], [0, 1], [0, -1], [-1, 0], [-1, -1], [-1, 1] ].reduce(
         (L, [dx, dy]) => {
