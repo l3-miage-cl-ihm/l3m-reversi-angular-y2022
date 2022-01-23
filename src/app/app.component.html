@@ -2,3 +2,12 @@
 Utilisez la console de dévéloppement pour interagir avec le service
 (pressez contrôle-majuscule-i).
 </pre>
+
+<pre>{{score}}</pre>
+<table>
+  <tr *ngFor="let L of board; index as i">
+    <td *ngFor="let c of L; index as j" (click)="play(i, j)">
+      {{symboleFor(c)}}
+    </td>
+  </tr>
+</table>
