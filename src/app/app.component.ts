@@ -9,8 +9,14 @@ import { Board_RO, C } from './ReversiDefinitions';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  canPlay: boolean[][] = [];
 
-  constructor(public RGS: ReversiGameEngineService, private ia: IaService) {}
+  constructor(public RGS: ReversiGameEngineService, private ia: IaService) {
+    RGS.gameStateObs.subscribe( gs => {
+      this.canPlay = gs.board.map( L => L.map( () => false ));
+      RGS.whereCanPlay().forEach( ([i, j]) => this.canPlay[i][j] = true );
+    })
+  }
 
   get board(): Board_RO {
     return this.RGS.board;
