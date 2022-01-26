@@ -1,27 +1,3 @@
-# L3mReversiAngularY2021
+# CL&IHM TP Reversi
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 11.0.1.
-
-## Development server
-
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
-
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+Voir le sujet sur <a target="_blank" href="https://univgrenoble.sharepoint.com/sites/L3MIAGE2021-2022Teams/_layouts/15/Doc.aspx?sourcedoc={309e8c40-3995-46db-926a-04b4caac7246}&action=edit&wd=target%28_Biblioth%C3%A8que%20de%20contenu%2FCL%20et%20IHM.one%7C1ae9cd34-8d56-4585-a4ff-b90037c5abf8%2FTP%204-5%20%20R%C3%A9versi%20%28Angular%5C%29%7Cae281f4b-b5a1-4fe2-9479-b4dd07f812a4%2F%29">OneNote</a>
