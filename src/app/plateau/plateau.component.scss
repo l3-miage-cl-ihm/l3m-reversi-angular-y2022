@@ -1,0 +1,61 @@
+$W: 32px;
+$P: 28px;
+$c: 16px;
+$tc: 8px;
+$lc: 8px;
+$t: .75s;
+
+table {
+  border-collapse: collapse;
+  border: solid black 3px;
+
+  td {
+    border: solid black 1px;
+    width:  $W;
+    height: $W;
+    background-color: green;
+
+    div {
+      transform: rotateY(90deg);
+      background-color: grey;
+    }
+  }
+
+  td.Player1 > div {
+    background-color: black;
+    transform: rotateY(0deg);
+  }
+
+  td.Player2 > div {
+    background-color: white;
+    transform: rotateY(180deg);
+  }
+
+  td.Player1, td.Player2 {
+    perspective: 800px;
+
+    div {
+      border-radius: 50%;
+      border: solid black 1px;
+      width:  $P;
+      height: $P;
+      transition: background-color $t, transform $t;
+    }
+  }
+
+  td.canPlay {
+    position: relative;
+
+    div {
+      transform: rotateY(0deg);
+      position: absolute;
+      left: $lc;
+      top: $tc;
+      width:  $c;
+      height: $c;
+      border-radius: 50%;
+      box-shadow: inset 5px 5px 15px 2px rgba(0,0,0,0.6);
+    }
+
+  }
+}
