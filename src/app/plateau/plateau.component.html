@@ -1,7 +1,7 @@
 <table>
   <tbody>
-    <tr *ngFor="let L of board; index as i">
-      <td *ngFor="let c of L; index as j"
+    <tr *ngFor="let L of board; index as i; trackBy: trackByIndex">
+      <td *ngFor="let c of L; index as j; trackBy: trackByIndex"
           [class.Player1] = "c === 'Player1' "
           [class.Player2] = "c === 'Player2' "
           [class.canPlay] = "playable[i][j]"

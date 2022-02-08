@@ -22,4 +22,9 @@ export class PlateauComponent implements OnInit {
   PLAY(d: [number, number]): void {
     this.play.emit(d);
   }
+
+  trackByIndex(i: number): number {
+    return i;
+  }
+
 }
